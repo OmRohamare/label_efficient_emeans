@@ -148,7 +148,7 @@ Using centroids trained with Meta's official `faiss.contrib.e_means.NumpyEmeans`
 
 ```powershell
 # 1. Clone repository
-git clone https://github.com/your-username/label_efficient_emeans.git
+git clone https://github.com/OmRohamare/label_efficient_emeans.git
 cd label_efficient_emeans
 
 # 2. Set up virtual environment
