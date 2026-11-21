@@ -13,7 +13,7 @@ Earlier baseline runs showed an apparent lag where e-means underperformed Lloyd-
 
 1. **Evaluation Split Mismatch:** The initial experimental pipeline defaulted to `holdout_frac=0.1`, which withheld $10,000$ images from e-means training, yet evaluated final MSE on the full $100,000$ dataset. Lloyd-25 trained on all $100,000$ images. Setting `holdout_frac=0.0` placed both methods on identical training data.
 2. **Formula Correction vs. Low-$k$ Grid Check:** In our initial implementation, batch size was stuck at $B=9129$ due to an algebraic cancellation bug (see below). When fixed to the paper's multi-variable scaling law, the prescribed parameters at $k=200$ are $B=4096, \alpha_0=0.6405$ (74 updates), which already outperforms Lloyd-25 on 5/5 seeds (MSE $0.65190$ vs $0.65259$). A coarse grid sweep (`03_law_check.py`, testing 10 alphas $\times$ 2 batch sizes $\{256, 1024\} \times 2$ $k$ values across 5 seeds) showed that a smaller batch ($B=1024, \alpha_0 \approx 0.215$, 293 updates) lowers MSE slightly further to $0.65179$.
-3. **Initialization Parity:** Lloyd was defaulting to scikit-learn's greedy $k$-means++ seeding (`n_local_trials=5`), whereas standard e-means used uniform random initialization. With matched $k$-means++ initialization, **e-means $T=3$ achieves MSE $0.65190$, beating Lloyd-25 (MSE $0.65259$)**.
+3. **Initialization Parity:** We resolved an initialization mismatch in an earlier harness version, now matched on $k$-means++ (`init="kmeans++"`). With matched initialization, **e-means $T=3$ achieves MSE $0.65190$, beating Lloyd-25 (MSE $0.65259$)**.
 
 ### 2. Diagnosis and Fix of the `laws.py` Algebraic Cancellation Bug
 In our project's earlier unverified draft of `src/laws.py`, batch size was formulated as:
@@ -159,9 +159,12 @@ python -m venv .venv
 pip install -r requirements.txt
 pip install faiss-cpu
 
-# Optional: Download pre-extracted DINOv2 features instead of extracting from scratch (~170 MB)
+# Optional: Download pre-extracted DINOv2 features instead of extracting from scratch (~157 MB)
 curl -L -o cache.zip https://github.com/your-username/label_efficient_emeans/releases/download/v1.0.0/cache_dinov2_tiny_imagenet.zip
 tar -xf cache.zip
+
+# Verify feature integrity against tracked SHA-256 checksums
+sha256sum -c checksums.sha256
 
 # 4. Run full unit test suite (64 tests)
 pytest tests/ -v
@@ -177,6 +180,15 @@ python experiments/02_selection_sweep.py --cache-dir cache --results-dir results
 python experiments/04_make_figures.py --results-dir results_full --output-dir results_full/figures
 ```
 
+### Feature Checksums (SHA-256)
+
+| File | Bytes | SHA-256 Checksum |
+|:---|:---:|:---|
+| `cache/train_feats.npy` | 153,600,128 | `f6974b6b5bb49aba43defecb431abf4a392738f52101cda90822be3301378c4e` |
+| `cache/train_labels.npy` | 800,128 | `fd297be84d7737ab295f758c1e5829a00e5015a983c7f2de51e2baafa6dc6e79` |
+| `cache/val_feats.npy` | 15,360,128 | `104ea1c11db7da19657d988374fe7a1194d063810be020cbf8abc0df30a8ed7e` |
+| `cache/val_labels.npy` | 80,128 | `adb79584a9b8f319d7e4cadb25e861e5252b385e1ddcb7e03d961afae7a0532f` |
+
 ### Verified Platform Specs
 - **OS:** Windows 11 Home (x64)
 - **GPU:** NVIDIA GeForce RTX 4070 Laptop GPU (8 GB VRAM)
@@ -184,7 +196,7 @@ python experiments/04_make_figures.py --results-dir results_full --output-dir re
 - **CPU Library:** Faiss-CPU 1.16.0
 - **Feature Backbone:** DINOv2 ViT-S/14 ($d=384$, 100,000 train vectors, 10,000 validation vectors)
 - **Environment Freeze:** [`environment_freeze.txt`](environment_freeze.txt)
-- **Checksums:** [`cache/checksums.sha256`](cache/checksums.sha256)
+- **Checksums:** [`checksums.sha256`](checksums.sha256) (tracked in git)
 - **Test Execution Log:** [`tests/test_run.log`](tests/test_run.log) (64 passed in 6.11s)
 
 ---
