@@ -1,0 +1,115 @@
+global:
+  seeds:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  results_dir: results
+  cache_dir: /content/drive/MyDrive/emeans_cache
+  figures_dir: results/figures
+cluster_bench:
+  smoke_test:
+    n_subsample: 5000
+    k: 50
+    seeds:
+    - 0
+  methods:
+  - name: Random
+    kind: random
+  - name: Lloyd-3
+    kind: lloyd
+    max_iter: 3
+  - name: Lloyd-25
+    kind: lloyd
+    max_iter: 25
+  - name: EMeans-T1
+    kind: emeans
+    T: 1
+  - name: EMeans-T2
+    kind: emeans
+    T: 2
+  - name: EMeans-T3
+    kind: emeans
+    T: 3
+  - name: EMeans-T5
+    kind: emeans
+    T: 5
+  output_file: cluster_bench.parquet
+selection_sweep:
+  budgets:
+  - 200
+  - 500
+  - 1000
+  - 2000
+  - 5000
+  smoke_test:
+    budgets:
+    - 200
+    - 500
+    seeds:
+    - 0
+  methods:
+  - name: Random
+    kind: random
+  - name: KMeanspp
+    kind: kmeanspp
+  - name: Lloyd-3
+    kind: lloyd
+    max_iter: 3
+  - name: Lloyd-25
+    kind: lloyd
+    max_iter: 25
+  - name: EMeans-T3
+    kind: emeans
+    T: 3
+    revival: true
+  - name: EMeans-T3-NoRevival
+    kind: emeans
+    T: 3
+    revival: false
+  output_file: selection_sweep.parquet
+law_check:
+  k_values:
+  - 200
+  - 1024
+  k_extrapolation:
+  - 200
+  n_alpha0_values: 10
+  alpha0_range:
+  - 0.001
+  - 1.0
+  batch_sizes:
+  - 256
+  - 1024
+  seeds:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  output_file: law_check.parquet
+figures:
+  style: seaborn-v0_8-whitegrid
+  dpi: 150
+  figsize:
+  - 8
+  - 5
+  palette: tab10
+  bootstrap_n_resamples: 2000
+  ci_alpha: 0.05
+  names:
+  - fig1_accuracy_vs_budget.png
+  - fig2_accuracy_diffs_ci.png
+  - fig3_holdout_mse_vs_updates.png
+  - fig4_mse_vs_wallclock.png
+  - fig5_epochs_to_match.png
+  - fig6_class_coverage.png
+  - fig7_revival_ablation.png
+  - fig8_scaling_law_regret.png
+  - fig9_ceiling_reference.png

@@ -1,0 +1,47 @@
+# Clustering configuration
+
+defaults:
+  seed: 42
+
+emeans:
+  # Scaling-law defaults (auto-computed when set to null)
+  # See src/laws.py — all coefficients marked UNVERIFIED
+  batch_size: null               # null → compute from scaling law
+  alpha0: null                   # null → compute from scaling law
+  num_updates: null              # null → compute from n, k, T
+
+  # Epoch multiplier (T in the paper)
+  T: 3
+
+  # Revival
+  revival:
+    enabled: true
+    tau: 0.1                     # dead-cluster threshold: N_j < tau * mean(N)
+    check_every: 1               # check every N update steps
+
+  # Holdout fraction for MSE tracking (not used for training)
+  holdout_fraction: 0.1
+
+  # Cosine schedule: decays alpha from alpha0 to alpha0/10
+  schedule:
+    type: "cosine"
+    alpha_min_factor: 0.1        # alpha_min = alpha0 * alpha_min_factor
+
+lloyd:
+  max_iter: 25
+  tol: 1.0e-6                    # relative MSE improvement tolerance
+  init: "kmeans++"
+  empty_cluster_policy: "split_largest"
+
+# k-means++ shared settings
+kmeanspp:
+  n_local_trials: 5             # number of candidate centres per step (Arthur & Vassilvitskii)
+
+# Shared k values used in experiments
+k_values:
+  - 200
+  - 500
+  - 1024
+
+# Default k
+k_default: 200

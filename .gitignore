@@ -1,0 +1,74 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.Python
+pip-wheel-metadata/
+share/python-wheels/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Cache
+.cache/
+cache/
+*.npy
+*.npz
+huggingface_cache/
+hf_cache/
+
+# Results (keep structure, ignore data)
+results/*.parquet
+results/figures/*.png
+results/figures/*.pdf
+!results/.gitkeep
+!results/figures/.gitkeep
+
+# Logs
+logs/
+*.log
+wandb/
+mlruns/
+
+# Notebooks checkpoints
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Mypy
+.mypy_cache/
+
+# Ruff
+.ruff_cache/
+
+# Distribution
+*.tar.gz
+*.whl
+*.zip
+
+.pytest_cache/
+__pycache__/
+*.egg-info/
