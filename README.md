@@ -160,7 +160,7 @@ pip install -r requirements.txt
 pip install faiss-cpu
 
 # Optional: Download pre-extracted DINOv2 features instead of extracting from scratch (~157 MB)
-curl -L -o cache.zip https://github.com/your-username/label_efficient_emeans/releases/download/v1.0.0/cache_dinov2_tiny_imagenet.zip
+curl -L -o cache.zip https://github.com/OmRohamare/label_efficient_emeans/releases/download/v1.0.0/cache_dinov2_tiny_imagenet.zip
 tar -xf cache.zip
 
 # Verify feature integrity against tracked SHA-256 checksums
